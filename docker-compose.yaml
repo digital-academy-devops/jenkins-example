@@ -1,0 +1,29 @@
+networks:
+  jenkins:
+
+volumes:
+  jenkins-data:
+  jenkins-jnlp-agent-data:
+
+services:
+  master:
+    image: jenkins/jenkins:lts
+    restart: always
+    networks:
+      - jenkins
+    ports:
+      - 8080:8080
+    environment:
+      - JAVA_OPTS=-Xmx2048m
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - jenkins-data:/home
+
+  jnlp-agent:
+    image: jenkins/jnlp-agent-docker
+    command:  ${JNLP_KEY} jnlp-agent -url http://master:8080/
+    networks:
+      - jenkins
+    volumes:
+      - jenkins-jnlp-agent-data:/var/jenkins_home/worker
+
