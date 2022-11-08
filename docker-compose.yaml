@@ -24,6 +24,10 @@ services:
     command:  ${JNLP_KEY} jnlp-agent -url http://master:8080/
     networks:
       - jenkins
+    privileged: true
+    user: root
     volumes:
       - jenkins-jnlp-agent-data:/var/jenkins_home/worker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker:/var/lib/docker
 
