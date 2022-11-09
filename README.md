@@ -9,7 +9,7 @@ docker-compose -p jenkins up -d master
 
 Получение первичного пароля администратора:
 ```shell
-docker-compose exec master cat /var/jenkins_home/secrets/initialAdminPassword
+docker-compose -p jenkins exec master cat /var/jenkins_home/secrets/initialAdminPassword
 ```
 
 Или:

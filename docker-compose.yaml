@@ -8,6 +8,7 @@ volumes:
 services:
   master:
     image: jenkins/jenkins:lts
+    user: root
     restart: always
     networks:
       - jenkins
