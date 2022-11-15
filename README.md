@@ -27,3 +27,14 @@ $ docker-compose logs master 2>&1 | grep -A2 "Please use the following password 
 ```shell
 docker-compose -p jenkins up -d jnlp-agent
 ```
+
+### Backup & restore
+```shell
+docker-compose -p jenkins run restore
+```
+
+```shell
+docker-compose -p jenkins down
+docker-compose -p jenkins run restore
+docker-compose -p jenkins up -d
+```

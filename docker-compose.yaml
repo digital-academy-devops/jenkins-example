@@ -16,9 +16,37 @@ services:
       - 8080:8080
     environment:
       - JAVA_OPTS=-Xmx2048m
+    privileged: true
     volumes:
       - jenkins-data:/var/jenkins_home
       - jenkins-data:/home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker:/var/lib/docker
+      - ./jenkins.yaml:/var/jenkins_home/jenkins_caac.yaml
+
+  backup:
+    image: alpine:3.14
+    profiles:
+      - backup
+    entrypoint: /bin/sh
+    command:
+      - -xc
+      - tar -czvf /backups/backup.tgz -C /var/jenkins_home .
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - ./backups:/backups
+
+  restore:
+    image: alpine:3.14
+    entrypoint: /bin/sh
+    profiles:
+      - restore
+    command:
+      - -xc
+      - tar -C /var/jenkins_home -xzvf /backups/backup.tgz
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - ./backups:/backups
 
   jnlp-agent:
     image: jenkins/jnlp-agent-docker
