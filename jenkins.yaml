@@ -11,23 +11,26 @@ jenkins:
       dockerApi:
         connectTimeout: 60
         dockerHost:
-          uri: "unix:///var/run/docker.sock"
+          uri: "unix:///dind/run/docker.sock"
         readTimeout: 60
+      exposeDockerHost: true
       name: "docker"
       templates:
-      - connector:
-          attach:
-            user: "jenkins"
+      - connector: "attach"
         dockerTemplateBase:
           cpuPeriod: 0
           cpuQuota: 0
-          image: "felipecrs/jenkins-agent-dind"
+          image: "jenkins/jnlp-agent-docker"
+          mounts:
+          - "type=bind,src=/var/run/docker.sock,dst=/dind/run/docker.sock"
+          mountsString: "type=bind,src=/var/run/docker.sock,dst=/dind/run/docker.sock"
           privileged: true
+          user: "root"
         labelString: "docker"
         pullStrategy: PULL_ALWAYS
         pullTimeout: 300
-        remoteFs: "/home/jenkins/agent"
         removeVolumes: true
+        stopTimeout: 600
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
