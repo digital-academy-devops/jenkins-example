@@ -4,6 +4,8 @@ networks:
 volumes:
   jenkins-data:
   jenkins-jnlp-agent-data:
+  dind-socket:
+  dind-storage:
 
 services:
   master:
@@ -20,9 +22,22 @@ services:
     volumes:
       - jenkins-data:/var/jenkins_home
       - jenkins-data:/home
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/docker:/var/lib/docker
       - ./jenkins.yaml:/var/jenkins_home/jenkins_caac.yaml
+      - dind-socket:/dind/run
+      - dind-storage:/var/lib/docker
+
+  docker-in-docker:
+    image: docker:20.10-dind
+    networks:
+      - jenkins
+    environment:
+      - DOCKER_TLS_CERTDIR=
+    privileged: true
+    volumes:
+      - dind-socket:/var/run
+      - dind-storage:/var/lib/docker
+    expose:
+      - 2375
 
   backup:
     image: alpine:3.14

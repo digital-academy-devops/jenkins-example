@@ -15,21 +15,26 @@ jenkins:
         readTimeout: 60
       name: "docker"
       templates:
-      - connector: "attach"
+      - connector:
+          attach:
+            user: "jenkins"
         dockerTemplateBase:
           cpuPeriod: 0
           cpuQuota: 0
-          image: "jenkins/jnlp-agent-docker"
-        labelString: "docker-cloud"
+          image: "felipecrs/jenkins-agent-dind"
+          privileged: true
+        labelString: "docker"
         pullStrategy: PULL_ALWAYS
         pullTimeout: 300
+        remoteFs: "/home/jenkins/agent"
+        removeVolumes: true
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
   labelAtoms:
   - name: "built-in"
-  - name: "docker-cloud"
+  - name: "docker"
   - name: "docker-standalone"
   - name: "jnlp-agent"
   markupFormatter: "plainText"
@@ -63,6 +68,8 @@ jenkins:
       - id: "admin"
         name: "admin"
         properties:
+        - "userCommunityProperty"
+        - "user"
         - "apiToken"
         - "myView"
         - "timezone"
@@ -87,6 +94,12 @@ security:
     creationOfLegacyTokenEnabled: false
     tokenGenerationOnCreationEnabled: false
     usageStatisticsEnabled: true
+  copyartifact:
+    mode: PRODUCTION
+  envInject:
+    enableLoadingFromMaster: false
+    enablePermissions: false
+    hideInjectedVars: false
   gitHooks:
     allowedOnAgents: false
     allowedOnController: false
@@ -100,6 +113,8 @@ unclassified:
     - "jobBuildDiscarder"
   buildStepOperation:
     enabled: false
+  casCGlobalConfig:
+    configurationPath: "/var/jenkins_home/jenkins_caac.yaml"
   email-ext:
     adminRequiredForTemplateTesting: false
     allowUnregisteredEnabled: false
@@ -123,6 +138,13 @@ unclassified:
     apiRateLimitChecker: ThrottleForNormalize
   gitHubPluginConfig:
     hookUrl: "http://localhost:8080/github-webhook/"
+  gitLabConnectionConfig:
+    connections:
+    - clientBuilderId: "autodetect"
+      connectionTimeout: 10
+      ignoreCertificateErrors: false
+      readTimeout: 10
+    useAuthenticatedEndpoint: true
   gitSCM:
     addGitTagAction: false
     allowSecondFetch: false
@@ -142,6 +164,8 @@ unclassified:
     injectMavenExtension: false
   junitTestResultStorage:
     storage: "file"
+  locale:
+    ignoreAcceptLanguage: false
   location:
     adminAddress: "address not configured yet <nobody@nowhere>"
     url: "http://localhost:8080/"
@@ -149,12 +173,24 @@ unclassified:
     charset: "UTF-8"
     useSsl: false
     useTls: false
+  mavenModuleSet:
+    localRepository: "default"
+  perforce:
+    lastSuccess: false
   pollSCM:
     pollingThreadCount: 10
+  prismConfiguration:
+    theme: PRISM
+  subversionSCM:
+    workspaceFormat: 8
   timestamper:
     allPipelines: false
     elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
     systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+  upstream:
+    globalUpstreamFilterStrategy: UseOldest
+  warningsParsers:
+    consoleLogScanningPermitted: false
 tool:
   git:
     installations:

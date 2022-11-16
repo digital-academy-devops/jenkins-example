@@ -38,3 +38,8 @@ docker-compose -p jenkins down
 docker-compose -p jenkins run restore
 docker-compose -p jenkins up -d
 ```
+
+### Ссылки
+
+- Плагин Docker: https://docs.cloudbees.com/docs/admin-resources/latest/plugins/docker-workflow 
+- DIND agent: https://github.com/felipecrs/jenkins-agent-dind
